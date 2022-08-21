@@ -14,8 +14,7 @@
     "node-red": {
         "nodes": {
             "motionlight": "motion-light/motion-light.js",
-            "motionlightevent": "motion-light/motion-light-event.js",
-            "motionlighttest": "motion-light/motion-light-test.js"
+            "motionlightevent": "motion-light/motion-light-event.js"
         }
     },
     "license": "MIT"

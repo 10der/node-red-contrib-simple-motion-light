@@ -1,0 +1,59 @@
+<script type="text/javascript">
+  RED.nodes.registerType("motion-light-event", {
+    category: "tools",
+    color: "#a6bbcf",
+    defaults: {
+      name: { value: "" },
+      userValue: { value: "", required: true },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "motion.png",
+    label: function () {
+      var valueText = "";
+      for (var i = 0; i < values.length; i++) {
+        if (values[i].v === this.userValue) {
+          valueText = values[i].t;
+          break;
+        }
+      }
+      return this.name || valueText || "motion-light-event";
+    },
+    oneditprepare: function () {
+      for (var i = 0; i < values.length; i++) {
+        var value = values[i].v;
+        var text = values[i].t;
+        $("#node-input-userValue").append(
+          $("<option></option>").attr("value", value).text(text)
+        );
+      }
+
+      // Make sure the selected value is also selected in the <select> tag
+      $("#node-input-userValue").val(this.userValue);
+    },
+  });
+</script>
+
+<script type="text/javascript">
+  var values = [
+    { v: "lux", t: "Lux sensor" },
+    { v: "exclude", t: "Exclude device" },
+  ];
+</script>
+
+<script type="text/html" data-template-name="motion-light-event">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-userValue"
+      ><i class="fa fa-calculator"></i> Value</label
+    >
+    <select id="node-input-userValue"></select>
+  </div>
+</script>
+<script type="text/html" data-help-name="motion-light-event">
+  <p>A simple node for create event for motion-light-event node</p>
+</script>

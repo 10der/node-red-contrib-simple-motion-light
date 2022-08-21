@@ -1,0 +1,205 @@
+<script type="text/javascript">
+  RED.nodes.registerType("motion-light", {
+    category: "tools",
+    color: "#a6bbcf",
+    defaults: {
+      name: { value: "" },
+      lat: {
+        value: "",
+      },
+      lon: {
+        value: "",
+      },
+      attributes: { value: [], required: true },
+      // rules: {
+      //   value: "{}",
+      //   validate: function (v) {
+      //     if (!v) return true;
+      //     try {
+      //       JSON.parse(v);
+      //       return true;
+      //     } catch (err) {
+      //       return false;
+      //     }
+      //   },
+      // },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "motion.png",
+    label: function () {
+      return this.name || "motion-light";
+    },
+    oneditprepare: function () {
+      const node = this;
+
+      $("#node-input-attribute-list").editableList({
+        addItem: (listItem, index, data) => {
+          const html = $($("#homee-attributes-template").html());
+          const idField = html.find(".node-input-attribute-id");
+          const timeField = html.find(".node-input-attribute-time");
+          const jsonField = html.find(".node-input-attribute-json");
+          idField.typedInput({ default: "str", types: ["str"] });
+          timeField.typedInput({ default: "str", types: ["str"] });
+          jsonField.typedInput({ default: "json", types: ["json"] });
+
+          listItem.updateJson = (attributeData) => {
+            const { id, time, ...other } = attributeData;
+            html
+              .find(".node-input-attribute-json")
+              .typedInput("value", JSON.stringify(other));
+          };
+
+          const attribute = Object.hasOwnProperty.call(data, "id")
+            ? data
+            : {
+                id: "",
+                time: "",
+                lux: 0,
+                brightness: 254,
+                timeout: 10,
+              };
+
+          idField.typedInput("value", attribute.id);
+          timeField.typedInput("value", attribute.time);
+
+          listItem.updateJson(attribute);
+
+          idField.change(() => {
+            attribute.id = idField.val();
+          });
+
+          timeField.change(() => {
+            attribute.time = timeField.val();
+          });
+
+          jsonField.on("change", () => {
+            const value = JSON.parse(jsonField.typedInput("value"));
+            Object.keys(value).forEach((key) => {
+              if (
+                Object.hasOwnProperty.call(attribute, key) &&
+                attribute[key] !== value[key]
+              ) {
+                attribute[key] = value[key];
+              }
+            });
+
+            timeField.val(attribute.time);
+          });
+
+          html.find(".typed-input-expand-trigger").on("click", () => {
+            html.find(".red-ui-typedInput-option-expand").click();
+          });
+
+          listItem.append(html);
+        },
+        removable: true,
+        sortable: true,
+        /*
+        sortItems: (items) => {
+          const attributeIds = items.map((index, item) => {
+            const val = item.find(".node-input-attribute-id").val();
+            return parseInt(val, 10);
+          });
+          attributeIds.sort((a, b) => a - b);
+
+          items.each((key, item) => {
+            item.find(".node-input-attribute-id").val(attributeIds[key]);
+          });
+        },
+        */
+      });
+
+      if (typeof node.attributes === "string")
+        node.attributes = JSON.parse(node.attributes);
+      node.attributes.sort((a, b) => a.id - b.id);
+
+      for (let i = 0; i < node.attributes.length; i += 1) {
+        $("#node-input-attribute-list").editableList(
+          "addItem",
+          JSON.parse(JSON.stringify(node.attributes[i]))
+        );
+      }
+
+      // $("#node-input-rules").typedInput({
+      //   default: "json",
+      //   typeField: "json",
+      //   types: ["json"],
+      // });
+      $("#node-input-rules").typedInput("type", "json");
+      // geo
+      if (
+        !$("#node-input-lat").val().trim() &&
+        !$("#node-input-lon").val().trim()
+      ) {
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            $("#node-input-lat").val(
+              Number(position.coords.latitude.toFixed(5))
+            );
+            $("#node-input-lon").val(
+              Number(position.coords.longitude.toFixed(5))
+            );
+          });
+        }
+      }
+    },
+    oneditsave: function () {
+      const node = this;
+      const listItems = $("#node-input-attribute-list").editableList("items");
+      node.attributes = [];
+
+      listItems.each((index, item) => {
+        const attribute = JSON.parse(
+          item.find(".node-input-attribute-json").typedInput("value")
+        );
+        attribute.id = item.find(".node-input-attribute-id").val();
+        attribute.time = item.find(".node-input-attribute-time").val();
+
+        // const doubleInstance = node.attributes.filter(
+        //   (a) => a.type === attribute.type && a.instance === attribute.instance
+        // );
+        // if (doubleInstance.length)
+        //   RED.notify(
+        //     node._("motion-light-test.error.double-instance"),
+        //     "error"
+        //   );
+
+        node.attributes.push(attribute);
+      });
+    },
+  });
+</script>
+
+<script type="text/x-red" data-template-name="motion-light">
+      <div class="form-row">
+          <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+          <input type="text" id="node-input-name" placeholder="Name">
+      </div>
+      <!-- <div class="form-row">
+        <label for="node-input-rules"><i class="fa fa-envelope"></i> Rules</label>
+        <input type="text" id="node-input-rules" style="width:70%">
+    </div> -->
+
+    <div class="form-row" style="margin-top: 20px; margin-bottom: 20px;">
+      <label for="node-input-attribute-list">
+        <i class="fa fa-list"></i> <span data-i18n="motion-light-test.label.attributes"></label>
+      <ol id="node-input-attribute-list"></ol>
+  </div>
+
+    <hr>
+    <div class="form-row">
+        <label for="node-input-lat">
+            <i class="fa fa-globe"></i> Latitude</label>
+        <input type="text" id="node-input-lat" placeholder="51.025">
+    </div>
+    <div class="form-row">
+        <label for="node-input-lon">
+            <i class="fa fa-globe"></i> Longitude</label>
+        <input type="text" id="node-input-lon" placeholder="-1.4">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="motion-light">
+  <p>A simple node that converts the message payloads into all lower-case characters</p>
+</script>

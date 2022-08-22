@@ -1,0 +1,264 @@
+[
+    {
+        "id": "d30f24cf16f7b26a",
+        "type": "api-call-service",
+        "z": "b4b397a4c96082eb",
+        "name": "Hallway Lights",
+        "server": "b4299e9663d70273",
+        "version": 5,
+        "debugenabled": false,
+        "domain": "light",
+        "service": "turn_on",
+        "areaId": [],
+        "deviceId": [],
+        "entityId": [
+            "light.hallway_lamp"
+        ],
+        "data": "",
+        "dataType": "jsonata",
+        "mergeContext": "",
+        "mustacheAltTags": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "data"
+            }
+        ],
+        "queue": "none",
+        "output_location": "payload",
+        "output_location_type": "msg",
+        "x": 920,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e7337755a85250c6",
+        "type": "motion-light",
+        "z": "b4b397a4c96082eb",
+        "name": "hallway",
+        "lat": "48.42686",
+        "lon": "35.01335",
+        "attributes": [
+            {
+                "lux": 1,
+                "brightness": 50,
+                "timeout": 10,
+                "id": "day",
+                "time": "sunrise..sunset"
+            },
+            {
+                "brightness": 254,
+                "timeout": 10,
+                "id": "evening",
+                "time": "sunset..23:00"
+            },
+            {
+                "brightness": 1,
+                "timeout": 2,
+                "id": "night",
+                "time": "23:00..sunrise"
+            }
+        ],
+        "x": 440,
+        "y": 180,
+        "wires": [
+            [
+                "01b0c3bee8933951"
+            ]
+        ]
+    },
+    {
+        "id": "1d9ea2d44c5b9a1c",
+        "type": "server-state-changed",
+        "z": "b4b397a4c96082eb",
+        "name": "hallway motions",
+        "server": "b4299e9663d70273",
+        "version": 4,
+        "exposeToHomeAssistant": false,
+        "haConfig": [
+            {
+                "property": "name",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            }
+        ],
+        "entityidfilter": "binary_sensor.motion_sensor_hallway_occupancy",
+        "entityidfiltertype": "exact",
+        "outputinitially": false,
+        "state_type": "str",
+        "haltifstate": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "outputs": 1,
+        "output_only_on_state_change": false,
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "ignorePrevStateNull": false,
+        "ignorePrevStateUnknown": false,
+        "ignorePrevStateUnavailable": false,
+        "ignoreCurrentStateUnknown": false,
+        "ignoreCurrentStateUnavailable": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "eventData"
+            },
+            {
+                "property": "topic",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "triggerId"
+            }
+        ],
+        "x": 120,
+        "y": 180,
+        "wires": [
+            [
+                "e7337755a85250c6"
+            ]
+        ]
+    },
+    {
+        "id": "83e7ad1f070c7902",
+        "type": "server-state-changed",
+        "z": "b4b397a4c96082eb",
+        "name": "hallway lux",
+        "server": "b4299e9663d70273",
+        "version": 4,
+        "exposeToHomeAssistant": false,
+        "haConfig": [
+            {
+                "property": "name",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            }
+        ],
+        "entityidfilter": "sensor.motion_sensor_hallway_illuminance_lux",
+        "entityidfiltertype": "exact",
+        "outputinitially": false,
+        "state_type": "num",
+        "haltifstate": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "outputs": 1,
+        "output_only_on_state_change": true,
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "ignorePrevStateNull": false,
+        "ignorePrevStateUnknown": false,
+        "ignorePrevStateUnavailable": false,
+        "ignoreCurrentStateUnknown": false,
+        "ignoreCurrentStateUnavailable": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "eventData"
+            },
+            {
+                "property": "topic",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "triggerId"
+            }
+        ],
+        "x": 100,
+        "y": 120,
+        "wires": [
+            [
+                "0f1d400af1b688be"
+            ]
+        ]
+    },
+    {
+        "id": "0f1d400af1b688be",
+        "type": "motion-light-event",
+        "z": "b4b397a4c96082eb",
+        "name": "",
+        "userValue": "lux",
+        "x": 270,
+        "y": 120,
+        "wires": [
+            [
+                "e7337755a85250c6"
+            ]
+        ]
+    },
+    {
+        "id": "c04be0642ea0989e",
+        "type": "debug",
+        "z": "b4b397a4c96082eb",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "01b0c3bee8933951",
+        "type": "function",
+        "z": "b4b397a4c96082eb",
+        "name": "Set brightness in payload",
+        "func": "if (msg.payload) {\n    msg.payload = {\n     domain: 'light',\n     service: 'turn_on',\n     data: { \n         brightness: msg.brightness\n     }\n    };\n    return msg;\n} else {\n    msg.payload = {\n     domain: 'light',\n     service: 'turn_off',\n     data: { \n     }\n    };\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 180,
+        "wires": [
+            [
+                "c04be0642ea0989e",
+                "d30f24cf16f7b26a"
+            ]
+        ]
+    },
+    {
+        "id": "b4299e9663d70273",
+        "type": "server",
+        "name": "Home Assistant",
+        "version": 2,
+        "addon": false,
+        "rejectUnauthorizedCerts": true,
+        "ha_boolean": "y|yes|true|on|home|open",
+        "connectionDelay": true,
+        "cacheJson": false,
+        "heartbeat": false,
+        "heartbeatInterval": "30"
+    }
+]

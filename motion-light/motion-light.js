@@ -10,6 +10,7 @@ module.exports = function (RED) {
     var timer = false;
     var map = new Map();
     var exclude = false;
+    var isOn = false;
     // configs vars
     var rulesJSON = config.attributes || {};
     var configurator = new Configurator(rulesJSON, config.lat, config.lon);
@@ -37,6 +38,7 @@ module.exports = function (RED) {
             if (timer) {
               clearTimeout(timer);
             }
+            isOn = false;
             node.send({ payload: false, brightness: 0 });
             node.status({
               fill: "blue",
@@ -50,11 +52,14 @@ module.exports = function (RED) {
 
       switch (msg.payload) {
         case "off":
+          // do not turn off if not me is owner
           if (timer) {
             clearTimeout(timer);
-            // do not turn off if not me is owner
+          }
+          if (isOn) {
             node.status({ fill: "yellow", shape: "ring", text: "waiting" });
             timer = setTimeout(() => {
+              isOn = false;
               node.send({ payload: false, brightness: 0 });
               timer = false;
               node.status({ fill: "red", shape: "ring", text: "off" });
@@ -94,6 +99,7 @@ module.exports = function (RED) {
             break;
           }
           node.send({ payload: true, brightness: brightness });
+          isOn = true;
           node.status({
             fill: "green",
             shape: "dot",

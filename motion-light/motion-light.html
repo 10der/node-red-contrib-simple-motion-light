@@ -4,29 +4,11 @@
     color: "#a6bbcf",
     defaults: {
       name: { value: "" },
-      lat: {
-        value: "",
-      },
-      lon: {
-        value: "",
-      },
       attributes: { value: [], required: true },
-      // rules: {
-      //   value: "{}",
-      //   validate: function (v) {
-      //     if (!v) return true;
-      //     try {
-      //       JSON.parse(v);
-      //       return true;
-      //     } catch (err) {
-      //       return false;
-      //     }
-      //   },
-      // },
     },
+    icon: "motion.png",
     inputs: 1,
     outputs: 1,
-    icon: "motion.png",
     label: function () {
       return this.name || "motion-light";
     },
@@ -120,30 +102,8 @@
           JSON.parse(JSON.stringify(node.attributes[i]))
         );
       }
-
-      // $("#node-input-rules").typedInput({
-      //   default: "json",
-      //   typeField: "json",
-      //   types: ["json"],
-      // });
-      $("#node-input-rules").typedInput("type", "json");
-      // geo
-      if (
-        !$("#node-input-lat").val().trim() &&
-        !$("#node-input-lon").val().trim()
-      ) {
-        if ("geolocation" in navigator) {
-          navigator.geolocation.getCurrentPosition(function (position) {
-            $("#node-input-lat").val(
-              Number(position.coords.latitude.toFixed(5))
-            );
-            $("#node-input-lon").val(
-              Number(position.coords.longitude.toFixed(5))
-            );
-          });
-        }
-      }
     },
+
     oneditsave: function () {
       const node = this;
       const listItems = $("#node-input-attribute-list").editableList("items");
@@ -161,7 +121,7 @@
         // );
         // if (doubleInstance.length)
         //   RED.notify(
-        //     node._("motion-light-test.error.double-instance"),
+        //     node._("motion-light.error.double-instance"),
         //     "error"
         //   );
 
@@ -172,34 +132,40 @@
 </script>
 
 <script type="text/x-red" data-template-name="motion-light">
-      <div class="form-row">
-          <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-          <input type="text" id="node-input-name" placeholder="Name">
-      </div>
-      <!-- <div class="form-row">
-        <label for="node-input-rules"><i class="fa fa-envelope"></i> Rules</label>
-        <input type="text" id="node-input-rules" style="width:70%">
-    </div> -->
-
-    <div class="form-row" style="margin-top: 20px; margin-bottom: 20px;">
-      <label for="node-input-attribute-list">
-        <i class="fa fa-list"></i> <span data-i18n="motion-light-test.label.attributes"></label>
-      <ol id="node-input-attribute-list"></ol>
+  <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="motion-light" style="width: 70%">
   </div>
 
-    <hr>
-    <div class="form-row">
-        <label for="node-input-lat">
-            <i class="fa fa-globe"></i> Latitude</label>
-        <input type="text" id="node-input-lat" placeholder="51.025">
-    </div>
-    <div class="form-row">
-        <label for="node-input-lon">
-            <i class="fa fa-globe"></i> Longitude</label>
-        <input type="text" id="node-input-lon" placeholder="-1.4">
-    </div>
+  <div class="form-row" style="margin-top: 20px; margin-bottom: 20px;">
+      <label for="node-input-attribute-list">
+        <i class="fa fa-list"></i> <span data-i18n="motion-light-label.attributes"></label>
+      <ol id="node-input-attribute-list"></ol>
+  </div>
 </script>
 
-<script type="text/x-red" data-help-name="motion-light">
-  <p>A simple node that converts the message payloads into all lower-case characters</p>
-</script>
+<template id="homee-attributes-template">
+  <div style="display: flex; width: 100%">
+    <div style="width: 25%; padding-right: 10px">
+      <input
+        class="node-input-attribute-id"
+        placeholder="night"
+        style="width: 100%"
+      />
+    </div>
+    <div style="width: 40%; padding-right: 10px">
+      <input
+        class="node-input-attribute-time"
+        placeholder="23:33..sunrise"
+        style="width: 100%"
+      />
+    </div>
+
+    <button type="button" class="red-ui-button typed-input-expand-trigger">
+      <i class="fa fa-edit"></i>
+    </button>
+    <div style="display: none">
+      <input class="node-input-attribute-json" />
+    </div>
+  </div>
+</template>

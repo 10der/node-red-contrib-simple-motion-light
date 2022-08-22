@@ -16,13 +16,13 @@ module.exports = function (RED) {
     var configurator = new Configurator(rulesJSON, config.lat, config.lon);
     var timeout = 10 * 1000;
     var brightness = 254;
-    var request_lux = 0;
+    var request_lux = Number.MAX_SAFE_INTEGER;
     var current_lux = 0;
 
     function onAction(msg) {
       var rule = configurator.getActiveRule();
       if (rule) {
-        request_lux = rule.lux || 0;
+        request_lux = rule.lux || Number.MAX_SAFE_INTEGER;
         timeout = (rule.timeout || 10) * 1000;
         brightness = rule.brightness || 254;
       }
@@ -37,6 +37,7 @@ module.exports = function (RED) {
           if (exclude) {
             if (timer) {
               clearTimeout(timer);
+              timer = false;
             }
             isOn = false;
             node.send({ payload: false, brightness: 0 });
@@ -55,6 +56,7 @@ module.exports = function (RED) {
           // do not turn off if not me is owner
           if (timer) {
             clearTimeout(timer);
+            timer = false;
           }
           if (isOn) {
             node.status({ fill: "yellow", shape: "ring", text: "waiting" });

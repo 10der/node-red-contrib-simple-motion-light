@@ -52,13 +52,14 @@ module.exports = function (RED) {
         case "off":
           if (timer) {
             clearTimeout(timer);
+            // do not turn off if not me is owner
+            node.status({ fill: "yellow", shape: "ring", text: "waiting" });
+            timer = setTimeout(() => {
+              node.send({ payload: false, brightness: 0 });
+              timer = false;
+              node.status({ fill: "red", shape: "ring", text: "off" });
+            }, timeout);
           }
-          node.status({ fill: "yellow", shape: "ring", text: "waiting" });
-          timer = setTimeout(() => {
-            node.send({ payload: false, brightness: 0 });
-            timer = false;
-            node.status({ fill: "red", shape: "ring", text: "off" });
-          }, timeout);
           break;
         case "on":
           if (timer) {

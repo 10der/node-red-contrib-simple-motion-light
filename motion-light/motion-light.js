@@ -44,7 +44,7 @@ module.exports = function (RED) {
             node.status({
               fill: "blue",
               shape: "ring",
-              text: "blocked by excludes",
+              text: `${rule.id} : blocked by excludes`,
             });
           }
         }
@@ -59,7 +59,11 @@ module.exports = function (RED) {
             timer = false;
           }
           if (isOn) {
-            node.status({ fill: "yellow", shape: "ring", text: "waiting" });
+            node.status({
+              fill: "yellow",
+              shape: "ring",
+              text: `${rule.id} : waiting`,
+            });
             timer = setTimeout(() => {
               isOn = false;
               node.send({ payload: false, brightness: 0 });
@@ -87,7 +91,7 @@ module.exports = function (RED) {
             node.status({
               fill: "blue",
               shape: "ring",
-              text: "blocked by excludes",
+              text: `${rule.id} : blocked by excludes`,
             });
             break;
           }
@@ -96,7 +100,7 @@ module.exports = function (RED) {
             node.status({
               fill: "blue",
               shape: "ring",
-              text: "blocked by lux rule",
+              text: `${rule.id} : blocked by lux rule`,
             });
             break;
           }

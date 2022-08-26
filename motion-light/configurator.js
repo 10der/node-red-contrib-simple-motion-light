@@ -128,14 +128,10 @@ function solar_events(date, latitude, longitude) {
 
 function isInRange(value, range) {
   if (range[0] <= range[1]) {
-    //node.warn(`${range[0]} <= ${value} && ${value} <= ${range[1]}`);
     return range[0] <= value && value <= range[1]; // 01:00-02:00
   } else {
-    //node.warn(`${range[0]} <= ${value} || ${value} <= ${range[1]}`);
     return range[0] <= value || value <= range[1]; // 23:00-21:00
   }
-
-  //return value >= range[0] && value <= range[1];
 }
 
 function toLocal(dt) {
@@ -174,8 +170,8 @@ class Configurator {
         ":" +
         currentdate.getMinutes().toString().padStart(2, "0");
       var inRange = isInRange(ctime, range);
+      console.log(ctime, range, inRange);
       if (inRange) {
-        // node.warn(time + ` is in range  ${range}`);
         result = item;
         result.interval = range;
       }

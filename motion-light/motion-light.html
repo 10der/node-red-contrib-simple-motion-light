@@ -5,6 +5,12 @@
     defaults: {
       name: { value: "" },
       attributes: { value: [], required: true },
+      lat: {
+        value: "",
+      },
+      lon: {
+        value: "",
+      },
     },
     icon: "motion.png",
     inputs: 1,
@@ -102,6 +108,22 @@
           JSON.parse(JSON.stringify(node.attributes[i]))
         );
       }
+      // geo
+      if (
+        !$("#node-input-lat").val().trim() &&
+        !$("#node-input-lon").val().trim()
+      ) {
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            $("#node-input-lat").val(
+              Number(position.coords.latitude.toFixed(5))
+            );
+            $("#node-input-lon").val(
+              Number(position.coords.longitude.toFixed(5))
+            );
+          });
+        }
+      }
     },
 
     oneditsave: function () {
@@ -141,6 +163,18 @@
       <label for="node-input-attribute-list">
         <i class="fa fa-list"></i> <span data-i18n="motion-light-label.attributes"></label>
       <ol id="node-input-attribute-list"></ol>
+  </div>
+
+  <hr>
+  <div class="form-row">
+      <label for="node-input-lat">
+          <i class="fa fa-globe"></i> Latitude</label>
+      <input type="text" id="node-input-lat" placeholder="51.025">
+  </div>
+  <div class="form-row">
+    <label for="node-input-lon">
+        <i class="fa fa-globe"></i> Longitude</label>
+    <input type="text" id="node-input-lon" placeholder="-1.4">
   </div>
 </script>
 
